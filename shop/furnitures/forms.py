@@ -2,6 +2,7 @@
 from shop.furnitures.models import *
 from django.forms.widgets import SelectMultiple, Select
 from django.db.models.query import QuerySet
+import re
 
 class FindForm(Form):  
     type=TypedChoiceField(label = u"Тип")
@@ -90,6 +91,20 @@ class CupboardFormAdd(ModelForm):
             row_ender = u'</td></tr>',
             help_text_html = u'<br /><span class="helptext">%s</span>',
             errors_on_separate_row = False)
+
+    def clean_dimensions(self):
+        data = self.cleaned_data['dimensions']
+        pattern_number0=u'^[0-9]{1,3}'
+        pattern_number1=u'[0-9]{1,3}'
+        pattern_x=u'[x|х]'
+        pattern=pattern_number0+pattern_x+pattern_number1+pattern_x+pattern_number1+'$'
+        print (pattern)
+        if re.match(pattern, data) is None:
+            print(u'нет')
+            raise forms.ValidationError(u"Габариты должны быть формате(пример):55х55х55")        
+        # Always return the cleaned data, whether you have changed it or
+        # not.
+        return data
 		
 class ShelfFormAdd(ModelForm):
     class Meta:

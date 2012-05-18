@@ -132,6 +132,8 @@ def buyall(request,ord):
 
 def store(request):
     #/проверить что это кладовщик
+    global completedform
+    completedform=''
     order=Order.objects.filter(statys=True,issuance=False)
     return render_to_response('storeForm.html', {'title':'Cклад',
                               'nameform':'add', 'orders':order},   
@@ -171,21 +173,23 @@ def choseForm(type,param=None):
             form=ShelfFormAdd(param)
     return form
 
-def storeget(request):
-    type=request.POST['Act']    
-    if type=='':
-        return HttpResponseRedirect("/storekeeper/")    
-    form=ArmchairFormAdd()    
-    form=choseForm(type)
-    form=form.as_table
+def storeget(request):    
     global completedform    
     if completedform!='':
-       if 'Action'in request.POST and request.POST['Action']==u'Добавить':
-          form=ProduserFormAdd(request.POST)    
-          instances=form.save()
-       form=completedform
-       form=form.as_tale
-       completedform=''
+        print type(completedform)
+        if 'Action'in request.POST and request.POST['Action']==u'Добавить':
+            form=ProduserFormAdd(request.POST)    
+            instances=form.save()
+        form=completedform
+        form=form.as_tale
+        completedform=''
+    else:
+        type=request.POST['Action']    
+        if type=='':
+           return HttpResponseRedirect("/storekeeper/")    
+        form=ArmchairFormAdd()    
+        form=choseForm(type)
+        form=form.as_table	
     return render_to_response('storeAddForm.html', {'title':'прием',
                               'nameform':'gуе', 'form':form,
 							  'Type':type},
@@ -200,9 +204,12 @@ def storeadd(request):
     if act=='':
         return HttpResponseRedirect("/storekeeper/")
     if act==u'Добавить товар':
-       form=choseForm(type,request.POST)       
-       instances=form.save()       
-       return HttpResponseRedirect("/storekeeper/")	   
+       form=choseForm(type,request.POST)
+       if form.is_valid():     
+           instances=form.save()       
+           return HttpResponseRedirect("/storekeeper/")
+       else: 
+           return HttpResponseRedirect("/storekeeper/get")		   
     if act==u'Добавить производителя':        
         form=ProduserFormAdd()
         return render_to_response('storeAddProdForm.html', {'title':'Добавление производителя',
