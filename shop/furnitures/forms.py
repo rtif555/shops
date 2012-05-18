@@ -106,6 +106,10 @@ class CupboardFormAdd(ModelForm):
         # not.
         return data
 		
+    def __type__(self):
+        return u'Шкафы'
+
+		
 class ShelfFormAdd(ModelForm):
     class Meta:
         model = Shelf

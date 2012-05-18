@@ -11,6 +11,7 @@ from django.db.models import Sum
 from shop.furnitures.forms import *
 
 completedform=''
+doesError=False
 
 def find(request,orders=""):
     ord=orders #пришеший номер заказа
@@ -35,8 +36,10 @@ def find(request,orders=""):
         #piese=.filter(type=type).filter(model=model).filter(color=color).filter(manufacturer=manufacturer)
         		
     return render_to_response('abstractForm.html', {'title':'Поисковая форма',
-                              'nameform':'find','form':forms.as_table, 'pieceoffurnitures':piese, 
-                              'Orders':ord, 'Basket':basket},   context_instance=RequestContext(request))
+                              'nameform':'find','form':forms.as_table, 
+                              'pieceoffurnitures':piese, 'Orders':ord, 
+                              'Basket':basket},   
+                              context_instance=RequestContext(request))
 	
 def buy_web(request, offset,ord):
     try:
@@ -44,7 +47,10 @@ def buy_web(request, offset,ord):
     except ValueError:
         raise Http404()
     piese=PieceOfFurniture.objects.get(id__exact=offset)
-    return render_to_response('buyForm.html', {'title':'Товар','nameform':'buy','pieceoffurniture':piese, 'Orders':ord},context_instance=RequestContext(request))
+    return render_to_response('buyForm.html', {'title':'Товар',
+	                          'nameform':'buy','pieceoffurniture':piese, 
+                              'Orders':ord},
+							  context_instance=RequestContext(request))
 
 
 def buy(request, offset,ord=""):
@@ -171,35 +177,40 @@ def choseForm(type,param=None):
             form=ChairFormAdd(param)
         elif type==u"Полки":
             form=ShelfFormAdd(param)
-    return form
+        return form
+    return ''
 
 def storeget(request):    
-    global completedform    
-    if completedform!='':
-        print type(completedform)
+    global completedform, doesError 
+    if completedform!='': 
+        types=completedform.__type__
         if 'Action'in request.POST and request.POST['Action']==u'Добавить':
             form=ProduserFormAdd(request.POST)    
             instances=form.save()
         form=completedform
-        form=form.as_tale
+        if doesError:
+            print (u'сделана ошибка')
+            form=form.as_table
+        else:
+            form=form.as_tale
         completedform=''
     else:
-        type=request.POST['Action']    
-        if type=='':
+        types=request.POST['Action']    
+        if types=='':
            return HttpResponseRedirect("/storekeeper/")    
         form=ArmchairFormAdd()    
-        form=choseForm(type)
+        form=choseForm(types)
         form=form.as_table	
     return render_to_response('storeAddForm.html', {'title':'прием',
                               'nameform':'gуе', 'form':form,
-							  'Type':type},
+							  'Type':types},
                                context_instance=RequestContext(request))
 
 
 def storeadd(request):
     act=request.POST['Action']
     type=request.POST['Type']    
-    global completedform
+    global completedform, doesError
     completedform=choseForm(type,request.POST)    
     if act=='':
         return HttpResponseRedirect("/storekeeper/")
@@ -209,6 +220,7 @@ def storeadd(request):
            instances=form.save()       
            return HttpResponseRedirect("/storekeeper/")
        else: 
+           doesError=True
            return HttpResponseRedirect("/storekeeper/get")		   
     if act==u'Добавить производителя':        
         form=ProduserFormAdd()
