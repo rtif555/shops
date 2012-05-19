@@ -54,7 +54,19 @@ class ArmchairFormAdd(ModelForm):
     class Meta:
         model = Armchair
         exclude = ('statys',)
-	
+
+    def clean_dimensions(self):
+        data = self.cleaned_data['dimensions']
+        pattern_number0=u'^[0-9]{1,3}'
+        pattern_number1=u'[0-9]{1,3}'
+        pattern_x=u'[x|х]'
+        pattern=pattern_number0+pattern_x+pattern_number1+pattern_x+pattern_number1+'$'
+        if re.match(pattern, data) is None:
+            raise forms.ValidationError(u"Габариты должны быть формате(пример):55х55х55")        
+        # Always return the cleaned data, whether you have changed it or
+        # not.
+        return data
+		
     def as_tale(self):
         "Returns this form rendered as HTML <t>s -- excluding the <table></table>."
         return self._html_output(
@@ -68,6 +80,18 @@ class ChairFormAdd(ModelForm):
     class Meta:
         model = Chair
         exclude = ('statys',)
+
+    def clean_dimensions(self):
+        data = self.cleaned_data['dimensions']
+        pattern_number0=u'^[0-9]{1,3}'
+        pattern_number1=u'[0-9]{1,3}'
+        pattern_x=u'[x|х]'
+        pattern=pattern_number0+pattern_x+pattern_number1+pattern_x+pattern_number1+'$'
+        if re.match(pattern, data) is None:
+            raise forms.ValidationError(u"Габариты должны быть формате(пример):55х55х55")        
+        # Always return the cleaned data, whether you have changed it or
+        # not.
+        return data
 		
     def as_tale(self):
         "Returns this form rendered as HTML <t>s -- excluding the <table></table>."
@@ -98,9 +122,7 @@ class CupboardFormAdd(ModelForm):
         pattern_number1=u'[0-9]{1,3}'
         pattern_x=u'[x|х]'
         pattern=pattern_number0+pattern_x+pattern_number1+pattern_x+pattern_number1+'$'
-        print (pattern)
         if re.match(pattern, data) is None:
-            print(u'нет')
             raise forms.ValidationError(u"Габариты должны быть формате(пример):55х55х55")        
         # Always return the cleaned data, whether you have changed it or
         # not.
@@ -115,6 +137,18 @@ class ShelfFormAdd(ModelForm):
         model = Shelf
         exclude = ('statys',)
 
+    def clean_dimensions(self):
+        data = self.cleaned_data['dimensions']
+        pattern_number0=u'^[0-9]{1,3}'
+        pattern_number1=u'[0-9]{1,3}'
+        pattern_x=u'[x|х]'
+        pattern=pattern_number0+pattern_x+pattern_number1+pattern_x+pattern_number1+'$'
+        if re.match(pattern, data) is None:
+            raise forms.ValidationError(u"Габариты должны быть формате(пример):55х55х55")        
+        # Always return the cleaned data, whether you have changed it or
+        # not.
+        return data
+
     def as_tale(self):
         "Returns this form rendered as HTML <t>s -- excluding the <table></table>."
         return self._html_output(
@@ -128,3 +162,11 @@ class ProduserFormAdd(ModelForm):
     class Meta:
         model = Producer
     
+    def clean_phone(self):
+        data = self.cleaned_data['phone']
+        pattern=u'^(\d|[pw+]){4,}$'
+        if re.match(pattern, data) is None:
+            raise forms.ValidationError(u"Номер телефона числа  должен быть более 4 знаков")        
+        # Always return the cleaned data, whether you have changed it or
+        # not.
+        return data

@@ -10,9 +10,6 @@ from django.db.models import Sum
 
 from shop.furnitures.forms import *
 
-completedform=''
-doesError=False
-
 def find(request,orders=""):
     ord=orders #пришеший номер заказа
     basket=False  #Ссылка на корзину
@@ -179,55 +176,54 @@ def choseForm(type,param=None):
             form=ShelfFormAdd(param)
         return form
     return ''
+	
 
-def storeget(request):    
-    global completedform, doesError 
-    if completedform!='': 
-        types=completedform.__type__
-        if 'Action'in request.POST and request.POST['Action']==u'Добавить':
-            form=ProduserFormAdd(request.POST)    
-            instances=form.save()
-        form=completedform
-        if doesError:
-            print (u'сделана ошибка')
-            form=form.as_table
-        else:
-            form=form.as_tale
-        completedform=''
-    else:
-        types=request.POST['Action']    
-        if types=='':
-           return HttpResponseRedirect("/storekeeper/")    
-        form=ArmchairFormAdd()    
-        form=choseForm(types)
-        form=form.as_table	
-    return render_to_response('storeAddForm.html', {'title':'прием',
-                              'nameform':'gуе', 'form':form,
-							  'Type':types},
-                               context_instance=RequestContext(request))
-
-
-def storeadd(request):
-    act=request.POST['Action']
-    type=request.POST['Type']    
-    global completedform, doesError
-    completedform=choseForm(type,request.POST)    
+def storeget(request): 
+    act=''
+    type=''	
+    if 'Action'in request.POST:
+        act=request.POST['Action']
+    if 'Type'in request.POST:
+        type=request.POST['Type']
     if act=='':
         return HttpResponseRedirect("/storekeeper/")
-    if act==u'Добавить товар':
-       form=choseForm(type,request.POST)
-       if form.is_valid():     
-           instances=form.save()       
-           return HttpResponseRedirect("/storekeeper/")
-       else: 
-           doesError=True
-           return HttpResponseRedirect("/storekeeper/get")		   
+    if act==u'Назад':
+        return HttpResponseRedirect("/storekeeper/")
     if act==u'Добавить производителя':        
         form=ProduserFormAdd()
-        return render_to_response('storeAddProdForm.html', {'title':'Добавление производителя',
+        return render_to_response('storeAddProdForm.html', 
+                              {'title':'Добавление производителя',
                               'nameform':'gуеs', 'form':form.as_table,
 							  'Type':type},
                                context_instance=RequestContext(request))
-    if act==u'Назад':
-        
-        return storeget(request)					   
+    if act==u'Добавить товар':
+        form=choseForm(type,request.POST)
+        if form.is_valid():     
+            instances=form.save()       
+            return HttpResponseRedirect("/storekeeper/")
+        else: 
+            return render_to_response('storeAddForm.html', {'title':'прием',
+                              'nameform':'gуе', 'form':form.as_table,
+                              'Type':type},
+                              context_instance=RequestContext(request))
+    if act==u'Добавить':
+        form=ProduserFormAdd(request.POST)
+        if form.is_valid():     
+            instances=form.save() 		
+            form=choseForm(type)
+            return render_to_response('storeAddForm.html', {'title':'прием',
+                              'nameform':'gуе', 'form':form.as_table,
+                              'Type':type},
+                              context_instance=RequestContext(request))
+        else:
+            return render_to_response('storeAddProdForm.html', {'title':'прием',
+                              'nameform':'gуе', 'form':form.as_table,
+                              'Type':type},
+                              context_instance=RequestContext(request))		
+    form=ArmchairFormAdd()         
+    form=choseForm(act)
+    type=act
+    return render_to_response('storeAddForm.html', {'title':'прием',
+                              'nameform':'gуе', 'form':form.as_table,
+                              'Type':type},
+                              context_instance=RequestContext(request))			   

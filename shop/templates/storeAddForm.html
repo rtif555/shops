@@ -1,7 +1,7 @@
 ﻿{% extends "base.html" %}
 {% block title %}{{ title }}{% endblock %}
 {% block body %}
-<form name="{{ nameform }}" method="Post" action="add">{% csrf_token %}
+<form name="{{ nameform }}" method="Post" action="">{% csrf_token %}
     <input type="hidden" name="Type" value="{{ Type }}">
 	<table>
       {{ form }}

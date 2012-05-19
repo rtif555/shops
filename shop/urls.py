@@ -25,5 +25,4 @@ urlpatterns = patterns('',
     (r'^storekeeper/order/(\d+)[/]{0,1}$', storeorder),
     (r'^storekeeper/order/(\d+)/give[/]{0,1}$',storeordergive),
     (r'^storekeeper/get$',storeget),
-	(r'^storekeeper/add$',storeadd),
 )
