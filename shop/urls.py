@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     # url(r'^shop/', include('shop.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
@@ -25,4 +25,5 @@ urlpatterns = patterns('',
     (r'^storekeeper/order/(\d+)[/]{0,1}$', storeorder),
     (r'^storekeeper/order/(\d+)/give[/]{0,1}$',storeordergive),
     (r'^storekeeper/get$',storeget),
+    (r'^furniture/update/(\d+)[/]{0,1}$',storeupdate),
 )

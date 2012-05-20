@@ -137,9 +137,11 @@ def store(request):
     #/проверить что это кладовщик
     global completedform
     completedform=''
-    order=Order.objects.filter(statys=True,issuance=False)
+    order=Order.objects.exclude(statys=False,issuance=True,emploeer=None)
+    furnitures=PieceOfFurniture.objects.filter(date_give=datetime.date.today())
     return render_to_response('storeForm.html', {'title':'Cклад',
-                              'nameform':'add', 'orders':order},   
+                              'nameform':'add', 'orders':order, 
+                              'pieceoffurnitures':furnitures},   
                               context_instance=RequestContext(request))
 
 def storeorder(request,order):
@@ -164,15 +166,15 @@ def storeordergive(request,order):
     Order.objects.filter(id=ord).update(issuance=True)
     return HttpResponseRedirect("/storekeeper/")
 
-def choseForm(type,param=None):    
+def choose_form(type,param=None):    
     if type!='':
-        if type==u"Шкафы":        
+        if type==u"Шкаф":        
             form=CupboardFormAdd(param)
-        elif type==u"Кресла":
+        elif type==u"Кресло":
             form=ArmchairFormAdd(param)
-        elif type==u"Стулья":
+        elif type==u"Стул":
             form=ChairFormAdd(param)
-        elif type==u"Полки":
+        elif type==u"Полка":
             form=ShelfFormAdd(param)
         return form
     return ''
@@ -197,7 +199,7 @@ def storeget(request):
 							  'Type':type},
                                context_instance=RequestContext(request))
     if act==u'Добавить товар':
-        form=choseForm(type,request.POST)
+        form=choose_form(type,request.POST)
         if form.is_valid():     
             instances=form.save()       
             return HttpResponseRedirect("/storekeeper/")
@@ -209,10 +211,10 @@ def storeget(request):
     if act==u'Добавить':
         form=ProduserFormAdd(request.POST)
         if form.is_valid():     
-            instances=form.save() 		
-            form=choseForm(type)
+            form.save() 		
+            forms=choose_form(type)
             return render_to_response('storeAddForm.html', {'title':'прием',
-                              'nameform':'gуе', 'form':form.as_table,
+                              'nameform':'gуе', 'form':forms.as_table,
                               'Type':type},
                               context_instance=RequestContext(request))
         else:
@@ -221,9 +223,24 @@ def storeget(request):
                               'Type':type},
                               context_instance=RequestContext(request))		
     form=ArmchairFormAdd()         
-    form=choseForm(act)
+    form=choose_form(act)
     type=act
     return render_to_response('storeAddForm.html', {'title':'прием',
                               'nameform':'gуе', 'form':form.as_table,
                               'Type':type},
-                              context_instance=RequestContext(request))			   
+                              context_instance=RequestContext(request))	
+
+def storeupdate(request, offset=''):
+    if offset!='':
+        try:
+            id= int(offset)
+           #получили  № зааказа
+        except ValueError:
+            raise Http404()
+        piece=PieceOfFurniture.objects.get(id__exact=id)
+        shelf=Shelf.objects.get(id__exact=id)
+        print(piece)
+        form=choose_form(piece.type,shelf)
+        return render_to_response('storeUpdateForm.html', {'title':'Изменение',
+                              'nameform':'piece', 'form':form.as_table},
+                              context_instance=RequestContext(request))			

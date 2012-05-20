@@ -13,10 +13,22 @@
     </table>
 	    <h1> Принятие товара</h1>
 		<table>
-	       <tr><td><input type="submit" value="Стулья" name ="Action"}}></td>
-	       <td><input type="submit" value="Кресла" name ="Action"}}></td></tr>
-	       <tr><td><input type="submit" value="Шкафы" name ="Action"}}></td>
-	       <td><input type="submit" value="Полки" name ="Action"}}></td></tr>
+	       <tr><td><input type="submit" value="Стул" name ="Action"}}></td>
+	       <td><input type="submit" value="Кресло" name ="Action"}}></td></tr>
+	       <tr><td><input type="submit" value="Шкаф" name ="Action"}}></td>
+	       <td><input type="submit" value="Полка" name ="Action"}}></td></tr>
+	   </table>
+	   <table>
+	       {% for pieceoffurniture in pieceoffurnitures %}
+        <tr>
+            <td>{{ pieceoffurniture.image }}</td>
+		    <td>{{ pieceoffurniture.type }}</td>
+			<td>{{ pieceoffurniture.model }}</td>
+			<td>{{ pieceoffurniture.color }}</td>
+			<td>{{ pieceoffurniture.price }}</td>
+            <td><a href="/furniture/update/{{ pieceoffurniture.id }}/"}>Изменить</a></td>
+	    </tr>
+		   {% endfor %}
 	   </table>
 </form>
 {% endblock %}

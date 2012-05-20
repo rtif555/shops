@@ -1,4 +1,6 @@
 ﻿from django.db import models
+from django.contrib.auth.models import User
+from shop.furnitures.field import *
 
 # Create your models here.
 
@@ -11,7 +13,8 @@ class Producer(models.Model):
     def __unicode__(self):
         return self.name
 
-class PieceOfFurniture(models.Model):   
+class PieceOfFurniture(models.Model):
+    date_give=models.DateField(auto_now_add=True, verbose_name=u"Дата принятия")   
     type=models.CharField(max_length=50, null=True, blank=True, editable=False, verbose_name=u"Тип") 
     model=models.CharField(max_length=50, verbose_name=u"Модель")
     manufacturer=models.ForeignKey(Producer, verbose_name=u"Производитель")
@@ -45,7 +48,7 @@ class Cupboard(PieceOfFurniture):
         super(Cupboard,self).save()		
     
     def __unicode__(self):
-        return u'Cupboard %s' % (self.model)
+        return u'Шкаф %s' % (self.model)
 		
 class Armchair(PieceOfFurniture):    
     material=models.CharField(max_length=50, verbose_name=u"Материал")
@@ -56,7 +59,7 @@ class Armchair(PieceOfFurniture):
         super(Armchair,self).save()		
 
     def __unicode__(self):
-        return u'Armchair %s' % (self.model)
+        return u'Кресло %s' % (self.model)
 		
 class Chair(PieceOfFurniture):
     quantity_of_legs=models.IntegerField(verbose_name=u"Количество ножек")#
@@ -67,7 +70,7 @@ class Chair(PieceOfFurniture):
         super(Chair,self).save()		
 
     def __unicode__(self):
-        return u'Chair %s' % (self.model)
+        return u'Стул %s' % (self.model)
 
 class Shelf(PieceOfFurniture):
     max_weight=models.IntegerField(verbose_name=u"Максимальная масса содержимого")#
@@ -77,22 +80,20 @@ class Shelf(PieceOfFurniture):
         super(Shelf,self).save()		
     
     def __unicode__(self):
-        return u'Shelf %s' % (self.model)
+        return u'Полка %s' % (self.model)
 		
 class Emploeer(models.Model): 
-    passport=models.CharField(max_length=20,verbose_name=u"Паспортные данные сотрудника")
-    name=models.CharField(max_length=100, verbose_name=u"ФИО")
+    passport=models.CharField(max_length=20,verbose_name=u"Паспортные данные сотрудника")    
     post=models.CharField(max_length=10, verbose_name=u"Должнлость")#
     salary=models.DecimalField(max_digits = 8, decimal_places=2, verbose_name=u"Заработная плата")
-    login=models.CharField(max_length=10,verbose_name=u"Логин")
-    password=models.CharField(max_length=10,verbose_name=u"Пароль")
+    user = models.ForeignKey(User, unique=True)
 	
     def __unicode__(self):
-        return '%s %s' % (self.post,self.name)
+        return '%s %s' % (self.post,self.user)
 	
 class Order(models.Model):
     id=models.AutoField(primary_key=True, verbose_name=u"Индификатор заказа")	
-    emploeer=models.ForeignKey(Emploeer, verbose_name=u"Оформляющий сотрудник")
+    emploeer=models.ForeignKey(Emploeer, null=True, blank=True, verbose_name=u"Оформляющий сотрудник")
     date_orders=models.DateField(auto_now_add=True, verbose_name=u"Дата заказа")
     statys=models.BooleanField(verbose_name=u"Статус заказа")
     cost=models.DecimalField(max_digits = 10,decimal_places=2, verbose_name=u"Общая стоимость заказа",null=True, blank=True)
