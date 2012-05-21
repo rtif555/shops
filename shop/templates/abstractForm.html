@@ -1,9 +1,17 @@
 ﻿{% extends "base.html" %}
 {% block title %}{{ title }}{% endblock %}
+{% block script %}
+     <script type="text/javascript" src="/media/js/jQuery.js"></script>
+	 <script type="text/javascript" src="/media/js/script1.js"></script>
+{% endblock %}
 {% block body %}
 <form name="{{ nameform }}" method="Post" action="">{% csrf_token %}
     <table>
      {{ form }}
+     {{ form1 }}
+     {{ form2 }}
+     {{ form3 }}
+     {{ form4 }}
       <tr>
 	     <td><input type="submit" value="Search"></td>
 		 {% if Basket %}

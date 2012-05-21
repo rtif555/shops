@@ -15,8 +15,13 @@ def find(request,orders=""):
     basket=False  #Ссылка на корзину
     if orders!="":  # если составляем заказ то создаем ссылку на корзину
         basket=True	
-    forms=FindForm(objects=PieceOfFurniture.objects.all())#форма поиска товара
+    form0=FindForm(objects=PieceOfFurniture.objects.all())#форма поиска товара
     piese=PieceOfFurniture.objects.filter(statys=False)
+    form1=ArmchairFormFind(objects=Armchair.objects.all())
+    form2=CupboardFormFind(objects=Cupboard.objects.all())
+    form3=ChairFormFind(objects=Chair.objects.all())
+    form4=ShelfFind(objects=Shelf.objects.all())
+    print(form4)    
     if request.method == 'POST':        
         objects=PieceOfFurniture.objects
         for item in forms.fields.keys():
@@ -33,7 +38,9 @@ def find(request,orders=""):
         #piese=.filter(type=type).filter(model=model).filter(color=color).filter(manufacturer=manufacturer)
         		
     return render_to_response('abstractForm.html', {'title':'Поисковая форма',
-                              'nameform':'find','form':forms.as_table, 
+                              'nameform':'find','form':form0.as_table(),
+                              'form1':form1.as_table(),'form2':form2.as_table(),
+                              'form3':form3.as_table(),'form4':form4.as_table(),							  
                               'pieceoffurnitures':piese, 'Orders':ord, 
                               'Basket':basket},   
                               context_instance=RequestContext(request))
@@ -166,16 +173,16 @@ def storeordergive(request,order):
     Order.objects.filter(id=ord).update(issuance=True)
     return HttpResponseRedirect("/storekeeper/")
 
-def choose_form(type,param=None):    
+def choose_form(type,param=None,files=None):
     if type!='':
         if type==u"Шкаф":        
-            form=CupboardFormAdd(param)
+            form=CupboardFormAdd(param,files)
         elif type==u"Кресло":
-            form=ArmchairFormAdd(param)
+            form=ArmchairFormAdd(param,files)
         elif type==u"Стул":
-            form=ChairFormAdd(param)
+            form=ChairFormAdd(param,files)
         elif type==u"Полка":
-            form=ShelfFormAdd(param)
+            form=ShelfFormAdd(param,files)        
         return form
     return ''
 	
@@ -199,9 +206,9 @@ def storeget(request):
 							  'Type':type},
                                context_instance=RequestContext(request))
     if act==u'Добавить товар':
-        form=choose_form(type,request.POST)
-        if form.is_valid():     
-            instances=form.save()       
+        form=choose_form(type,request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
             return HttpResponseRedirect("/storekeeper/")
         else: 
             return render_to_response('storeAddForm.html', {'title':'прием',

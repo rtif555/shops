@@ -37,18 +37,99 @@ class FindForm(Form):
 
 class ArmchairFormFind(Form):
     material=TypedChoiceField(label=u"Материал")
-    has_gazopatron=BooleanField(label=u"Газоптрон")
+    has_gazopatron=TypedChoiceField(label=u"Газоптрон")
+	
+    def __init__(self, objects,*args, **kwargs):        
+        super(ArmchairFormFind, self).__init__(*args, **kwargs)		
+        substitution=Armchair.objects.all()
+        for item in self.fields.keys():  #формируем select(-------,[выборка из базы])
+            #if item!='type':
+                #substitution=objects
+            #else:
+            substitution.query.group_by = [item]
+            self.fields[item].choices=substitution.values_list(item,item)
+            self.fields[item].choices.insert(0,('---------','---------'))
+    
+    def as_table(self):
+        "Returns this form rendered as HTML <t>s -- excluding the <table></table>."
+        return self._html_output(
+            normal_row = u'<th class="arm">%(label)s</th><td>%(errors)s%(field)s%(help_text)s</td>',
+            error_row = u'<tr><td colspan="2">%s</td></tr>',
+            row_ender = u'</td></tr>',
+            help_text_html = u'<br /><span class="helptext">%s</span>',
+            errors_on_separate_row = False)			
+        
 
 class CupboardFormFind(Form):    
     quantity_of_doors=TypedChoiceField(label=u"Количество дверей")
-    has_lock=BooleanField(label=u"Наличие замка")
+    has_lock=TypedChoiceField(label=u"Наличие замка")
+	
+    def __init__(self, objects,*args, **kwargs):        
+        super(CupboardFormFind, self).__init__(*args, **kwargs)		
+        substitution=Cupboard.objects.all()
+        for item in self.fields.keys():  #формируем select(-------,[выборка из базы])
+            #if item!='type':
+                #substitution=objects
+            #else:
+            substitution.query.group_by = [item]
+            self.fields[item].choices=substitution.values_list(item,item)
+            self.fields[item].choices.insert(0,('---------','---------')) 
+
+    def as_table(self):
+        "Returns this form rendered as HTML <t>s -- excluding the <table></table>."
+        return self._html_output(
+            normal_row = u'<th class="cup">%(label)s</th><td>%(errors)s%(field)s%(help_text)s</td>',
+            error_row = u'<tr><td colspan="2">%s</td></tr>',
+            row_ender = u'</td></tr>',
+            help_text_html = u'<br /><span class="helptext">%s</span>',
+            errors_on_separate_row = False)			
 
 class ChairFormFind(Form):
     quantity_of_legs=TypedChoiceField(label = u"Количество ножек ")
     height_spin=TypedChoiceField(label=u"Высота спинки")
+	
+    def __init__(self, objects,*args, **kwargs):        
+        super(ChairFormFind, self).__init__(*args, **kwargs)		
+        substitution=Chair.objects.all()
+        for item in self.fields.keys():  #формируем select(-------,[выборка из базы])
+            #if item!='type':
+                #substitution=objects
+            #else:
+            substitution.query.group_by = [item]
+            self.fields[item].choices=substitution.values_list(item,item)
+            self.fields[item].choices.insert(0,('---------','---------'))
 
-class ShelfFind(PieceOfFurniture):
+    def as_table(self):
+        "Returns this form rendered as HTML <t>s -- excluding the <table></table>."
+        return self._html_output(
+            normal_row = u'<th class="chr">%(label)s</th><td>%(errors)s%(field)s%(help_text)s</td>',
+            error_row = u'<tr><td colspan="2">%s</td></tr>',
+            row_ender = u'</td></tr>',
+            help_text_html = u'<br /><span class="helptext">%s</span>',
+            errors_on_separate_row = False)
+			
+class ShelfFind(Form):
     max_weight=TypedChoiceField(label=u"Максимальная масса содержимого")#
+
+    def __init__(self, objects,*args, **kwargs):        
+        super(ShelfFind, self).__init__(*args, **kwargs)		
+        substitution=Shelf.objects.all()
+        for item in self.fields.keys():  #формируем select(-------,[выборка из базы])
+            #if item!='type':
+                #substitution=objects
+            #else:
+            substitution.query.group_by = [item]
+            self.fields[item].choices=substitution.values_list(item,item)
+            self.fields[item].choices.insert(0,('---------','---------'))
+			
+    def as_table(self):
+        "Returns this form rendered as HTML <t>s -- excluding the <table></table>."
+        return self._html_output(
+            normal_row = u'<th class="shelf">%(label)s</th><td>%(errors)s%(field)s%(help_text)s</td>',
+            error_row = u'<tr><td colspan="2">%s</td></tr>',
+            row_ender = u'</td></tr>',
+            help_text_html = u'<br /><span class="helptext">%s</span>',
+            errors_on_separate_row = False)
 				
 class ArmchairFormAdd(ModelForm):
     class Meta:

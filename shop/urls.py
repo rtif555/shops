@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
+    (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': 'C:/Python25/Scripts/shop/shop/media'}),
     url(r'^admin/', include(admin.site.urls)),
 	(r'^find/(\d*)[/]{0,1}$', find),
 	(r'^furniture/(\d+)/(\d*)[/]{0,1}$', buy_web),
