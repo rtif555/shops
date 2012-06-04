@@ -1,31 +1,78 @@
 ﻿{% extends "base.html" %}
 {% block title %}Корзина{% endblock %}
+{% block script %}
+     <script type="text/javascript" src="/media/js/jQuery.js"></script>
+     <script type="text/javascript" src="/media/js/Print.js"></script>
+     <script type="text/javascript">
+	  $(document).ready(function(){
+			$("#Оформить").click(function(){
+	   $(".print").printElement({pageTitle:'Товарный чек',overrideElementCSS:[
+        "/media/style2.css",
+        { href:'/media/style2.css'}]
+            });
+	});
+});
+	 </script>
+	 <link href="/media/style.css" rel="stylesheet" type="text/css" />
+     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+{% endblock %}
+{% block header_last %}
+<li><a href="/find/{{ Orders }}"}>Назад</a>
+{% endblock %}
 {% block body %}
 <form name="{{ nameform }}" method="Post" action="all">{% csrf_token %}
 <input type="hidden" name="Orders" value="{{ Orders }}">
-    <table>     
+    <table class="print">
+	<tr>  
+				<td> Чек №{{ Orders }}</td>
+		
+			</tr>
+             <tr>  
+				<th>Модель</th>
+				<th>Цвет</th>
+				<th>Цена</th>
+				<th>Производитель</th>
+		
+			</tr>	
 	 {% for pieceoffurniture in pieceoffurnitures %}
        <tr>
-	      <td>{{ pieceoffurniture.image }}</td>
 		  <td>{{ pieceoffurniture.model }}</td>
 		  <td>{{ pieceoffurniture.color }}</td>
 		  <td>{{ pieceoffurniture.price }}</td>
 		  <td>{{ pieceoffurniture.manufacturer }}</td> 
-          <td><a href="/cancel/buy/{{ pieceoffurniture.id }}/{{ Orders }}">Удалить</a></td>		  
+                  <td><a href="/cancel/buy/{{ pieceoffurniture.id }}/{{ Orders }}">Удалить</a></td>		  
        </tr>
 	  {% endfor %}
 	   <tr>
 	      <td>&nbsp </td>
 	   </tr>
 	   <tr>
-	      <td>Стоимость заказа</td>
-		  <td>{{ price__sum }}</td>
+	      <td colspan="2">Стоимость заказа:</td>
+		  <td colspan="2">{{ price__sum }}
+              </td>
 	   </tr>
-	 
+           {% if user.is_authenticated %}		   	 
 	   <tr>
-	      <td><a href="/cancel/orders/{{ Orders }}">Очистить</a></td> 
-		  <td><input type="submit" value="Покупка" name ="Action"}}></td>
-		  <td><a href="/find/{{ Orders }}"}>Назад</a></td>
+	      <td>Продавец:</td>
+		  <td  colspan="2">{{ namebuyer }}
+                  </td>
+           <td colspan="1">_______________
+                  </td>
+	   </tr>
+                {% endif %}
+	 </table>
+     <table>
+
+	   <tr>
+	      <td><a href="/cancel/orders/{{ Orders }}"><img src="/media/images/delete.gif"></a></td> 
+		  <td><input type="hidden"  value="{{ Act }}" name ="Action">
+		       {% if Acts %}
+			   <input type="image" id="{{ Act }}" src="/media/images/rezerv.gif" onClick="{{ nameform }}.Submit()"/>
+			   {% else %}
+			   <input type="image" id="{{ Act }}" src="/media/images/buyall.gif" onClick="{{ nameform }}.Submit()"/>
+			   {% endif %}
+		  </td>
+		  
 	   </tr>
      
     </table>

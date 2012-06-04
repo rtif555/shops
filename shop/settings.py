@@ -1,5 +1,9 @@
 ﻿# Django settings for shop project.
+import os, sys
 
+def rel(*x):
+    return os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
+	
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -19,6 +23,7 @@ DATABASES = {
         'PASSWORD': 'rtif45',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'TEST_NAME':'asdf',
     }
 }
 
@@ -50,12 +55,11 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = '/gallery/media/'
-
+MEDIA_ROOT =rel('media')
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = '/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files

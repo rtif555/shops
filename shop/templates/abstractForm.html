@@ -2,36 +2,86 @@
 {% block title %}{{ title }}{% endblock %}
 {% block script %}
      <script type="text/javascript" src="/media/js/jQuery.js"></script>
-	 <script type="text/javascript" src="/media/js/script1.js"></script>
+     <script type="text/javascript" src="/media/js/script1.js"></script>
+     <link href="/media/style.css" rel="stylesheet" type="text/css" />
+     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 {% endblock %}
-{% block body %}
-<form name="{{ nameform }}" method="Post" action="">{% csrf_token %}
-    <table>
-     {{ form }}
-     {{ form1 }}
-     {{ form2 }}
-     {{ form3 }}
-     {{ form4 }}
-      <tr>
-	     <td><input type="submit" value="Search"></td>
-		 {% if Basket %}
-             <td><a href="/basket{{ Orders }}"}>Корзина</a></td>
-         {% endif %}
-	  </tr>	  
-    </table>
-</form>
-<form name="buy" method="Post" action="">{% csrf_token %}
-     <table>
-	 <input type="hidden" name="Orders" value="{{ Orders }}">
-     {% for pieceoffurniture in pieceoffurnitures %}
-        <tr>
+{% block header %}
+    {% if BM %}
+        <li><a href="/internetorders/">Оформление Интернет-заказа</a>
+		
+    {% endif %}
+{% endblock %}	
+{% block header_last %}
+    <li><a href="/help/">Справка</a>				
+   {% if user.is_authenticated %}
+            <li><a href="/logout/">Выход</a>
+    {% else %}
+            <li><a href="/avtoriz/">Авторизация</a>
+	{% endif %}
+	{% if Basket %}	
+         <li><a href="/basket{{ Orders }}"}>Корзина</a></td>
+    {% endif %}
+{% endblock %}
+
+{% block tbody %}
+    <form name="{{ nameform }}" method="Post" action="">{% csrf_token %}
+        <table>
+	      <td><input type="image" src="/media/images/search.gif" onClick="{{ nameform }}.Submit()"/></td>
+            {{ form }}
+            {{ form1 }}
+            {{ form2 }}
+            {{ form3 }}
+            {{ form4 }}          
+		 
+        </table>
+		
+  </form>
+{% endblock %}
+{% block body %}  	
+    <form name="buy" method="Post" action="">{% csrf_token %}
+         <table class="all"> <tr>  
+			    <th class="centre">Изображение</th>
+				<th>Тип</th>
+				<th>Модель</th>
+				<th>Цвет</th>
+				<th>Размеры</th>
+				<th>Цена</th>
+				<th>Переход</th>
+			</tr>  
+	    <input type="hidden" name="Orders" value="{{ Orders }}">
+            {% for pieceoffurniture in pieceoffurnitures %}
+           
+			<tr>
+    	     <td class="centre"><img src="{{ MEDIA_URL }}{{ pieceoffurniture.image }}" height="50px" width="50px"></td>
+
 		    <td>{{ pieceoffurniture.type }}</td>
-			<td>{{ pieceoffurniture.model }}</td>
-			<td>{{ pieceoffurniture.color }}</td>
-			<td>{{ pieceoffurniture.price }}</td>
-			<td><a href="/furniture/{{ pieceoffurniture.id }}/{{ Orders }}"}>Просмотр</a></td>
-	    </tr>
-     {% endfor %}
-    </table>
-</form>
+		    <td>{{ pieceoffurniture.model }}</td>
+		    <td>{{ pieceoffurniture.color }}</td>
+            <td>{{ pieceoffurniture.dimensions }}</td>
+		    <td>{{ pieceoffurniture.price }}</td>
+		    <td><a href="/furniture/{{ pieceoffurniture.id }}/{{ Orders }}">Просмотр</a></td>
+	        </tr>
+            {% endfor %}
+        </table>
+   </form>
+   <table class="all">
+         <tr>
+	        <span class="step-links"> 
+        {% if pieceoffurnitures.has_previous %} 
+            <td align='center'><a href="?page={{ pieceoffurnitures.previous_page_number }}">Предыдущая</a> &nbsp;&nbsp;
+		{% else %}
+		     <td align='center'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			
+        {% endif %} 
+        Страница {{ pieceoffurnitures.number }} из {{ pieceoffurnitures.paginator.num_pages }}. &nbsp;&nbsp;
+        {% if pieceoffurnitures.has_next %} 
+             <a href="?page={{ pieceoffurnitures.next_page_number }}">Следующая</a> </td>
+					{% else %}
+		      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			 </td>
+        {% endif %}
+</tr>		
+     </span>
+	    </table>
 {% endblock %}

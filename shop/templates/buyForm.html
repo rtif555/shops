@@ -1,19 +1,80 @@
 ﻿{% extends "base.html" %}
 {% block title %}{{ title }}{% endblock %}
+{% block script %}
+      <script type="text/javascript" src="/media/js/jQuery.js"></script>
+	  <script type="text/javascript">
+	  $(document).ready(function(){
+						   
+	$(window).resize(function(){
+
+		$('.center').css({
+			position:'absolute',
+			left: ($(window).width() - $('.center').outerWidth())/2			
+		});
+		
+	});
+	// To initially run the function:
+	$(window).resize();
+
+});
+	  
+	  
+	  </script>
+	  <script type="text/javascript" src="/media/js/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
+	  	<link rel="stylesheet" type="text/css" href="/media/js/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+	<script type="text/javascript" src="/media/js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			/*
+			*   Examples - images
+			*/
+
+
+
+			$("a#zoom").fancybox({
+				'overlayShow'	: false,
+				'transitionIn'	: 'elastic',
+				'transitionOut'	: 'elastic'
+			});
+			
+        
+			
+		});
+	</script>
+     <link href="/media/style.css" rel="stylesheet" type="text/css" />
+     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+{% endblock %}
+{% block header_last %}
+<li><a href="/find/{{ Orders }}"}>Назад</a>
+{% endblock %}
 {% block body %}
 <form name="{{ nameform }}" method="Post" action="buy/">{% csrf_token %}
 <input type="hidden" name="Orders" value="{{ Orders }}">
-    <table>     
+    <table class="center">     
        <tr>
-	      <td>{{ pieceoffurniture.image }}</td>
-		  <td>{{ pieceoffurniture.model }}</td>
-		  <td>{{ pieceoffurniture.color }}</td>
-		  <td>{{ pieceoffurniture.price }}</td>
-		  <td>{{ pieceoffurniture.manufacturer }}</td>   
-       </tr>
+	      <td rowspan="6"><a id="zoom" href="{{ MEDIA_URL }}{{ pieceoffurniture.image }}">
+		        <img src="{{ MEDIA_URL }}{{ pieceoffurniture.image }}" height="300px" width="250px"></a>
+		  </td>
+		  <tr>
+			 <th>Модель</th><td>{{ pieceoffurniture.model }}</td>
+		  </tr>
+		  <tr>
+		     <th>Цвет</th><td>{{ pieceoffurniture.color }}</td>
+		  </tr>
+		  <tr>
+			 <th>Размеры</th><td>{{ pieceoffurniture.dimensions }}</td>
+		  </tr>
+		   <tr>
+		    <th>Производитель</th><td>{{ pieceoffurniture.manufacturer }}</td>   
+		   </tr>
+		     <tr>
+			     <th>Цена</th><td>{{ pieceoffurniture.price }}</td>
+			 </tr>	   									
+						
+		        </tr>
 	   <tr>
-	      <td><a href="/find/{{ Orders }}"}>Назад</a></td>
-		  <td><input type="submit" value="Купить" name ="Action"}}></td>
+	      
+		  <td colspan="3" align="center"><input type="image" src="/media/images/buy.gif" onClick="{{ nameform }}.Submit()"/></td>
 	   </tr>
      
     </table>
