@@ -1,0 +1,60 @@
+﻿{% extends "base.html" %}
+{% block title %}Авторизация{% endblock %}
+{% block script %}
+     <link href="/media/style.css" rel="stylesheet" type="text/css" />
+     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	  <script type="text/javascript" src="/media/js/jQuery.js"></script>
+	   <script type="text/javascript">
+	  $(document).ready(function(){
+						   
+	$(window).resize(function(){
+
+		$('.center').css({
+			position:'absolute',
+			left: ($(window).width() - $('.center').outerWidth())/2			
+		});
+		
+	});
+	// To initially run the function:
+	$(window).resize();
+
+});
+	  
+	  
+	  </script>
+{% endblock %}
+{% block header_last %}
+<li><a href="/find/"}>Назад</a>		
+{% endblock %}
+{% block body %}
+<form name="exit" method="Post" action="enter">{% csrf_token %}
+   	<table class="center">
+        <tr>
+		  <td colspan="2"><b>{{ error }}</b></td>
+		</tr>
+		<tr>
+		     <td>
+			    Логин:
+			 </td>
+		    <td>
+			    <input type="text" name="login" value=""> 
+			</td>
+		</tr>
+		<tr>
+		    <td>
+			    Пароль: 
+			</td>
+		    <td>
+			    <input type="password" name="password" value="">
+            </td>
+         </tr>
+         <tr>		 
+			<td colspan="2" align="center" >
+			    <input type="image" src="/media/images/enter.gif" onClick="exit.Submit()"/>						
+			</td>
+
+		</tr>
+	</table>
+</form>
+{% endblock %}
+

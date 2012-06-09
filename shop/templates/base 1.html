@@ -1,0 +1,64 @@
+﻿<html>
+   <head>
+<link href="style.css" rel="stylesheet" type="text/css" />
+      <title>
+	      {% block title %}{% endblock %}
+      </title>
+	  {% block script %}{% endblock %}
+   </head>
+   <body>
+      <div class="min_width">
+	         <!--header -->
+        <div id="header">
+        	<div class="menu">
+            	<div class="menu_left">
+                	<div class="menu_right">
+                    	<div class="menu_indent">
+                        	<ul>  
+                                {% block header %}{% endblock %}
+                                	<li><a href="/help/">Справка</a>					
+                                {% block header_last %}{% endblock %}
+                            </ul>	
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="indent">
+                <div class="logo">
+                    <h1><a href="#">Ивушка</a></h1>
+                    <div><span>Мы продаем только самую лучшую мебель</span></div>
+                </div>                
+            </div>
+        </div>
+        <!--header end--> 
+	    <!--content -->
+        <div class="content">
+            <div class="indent">
+                <div class="w100">
+                    <div class="column_center">
+                        <div class="indent_center">
+                        	<div class="title">
+                            	<div class="bg_title">{% block tbody %}{% endblock %}</div>                                
+                            </div>
+                            <div class="text_box">
+                                {% block body %}{% endblock %} 
+                            </div>								
+                        </div>
+                    </div>
+                    
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+        <!--content end-->
+         {% block body2 %}{% endblock %}  
+		 <table class="cente">						
+			<form name="{{ nameform }}" method="Post" action="get">{% csrf_token %}		
+	       <tr><td><input value="Стул" class="submit-img" name ="Action" type="submit" /></td>
+	       <td><input value="Кресло" class="submit-img" name ="Action" type="submit"  /></td>
+	       <td><input value="Шкаф" class="submit-img" name ="Action" type="submit"  />
+		   <td><input value="Полка" class="submit-img" name ="Action" type="submit" /></td></tr>
+	   </table>
+         
+	  </div>
+   </body>

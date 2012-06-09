@@ -15,6 +15,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 def this_is(user,str=''):
+    """Метод опрелделения пользователя на
+    совершения тех или иных действий"""
     use=user.get_profile()
     if str=='':    
         return use.post
@@ -24,9 +26,11 @@ def this_is(user,str=''):
         return False
 
 def home(request):
+    """Обычная заглушка на homepage"""
     return HttpResponseRedirect("/find/")
 		
 def choose_form(type,param=None,files=None,*args, **kwargs):
+    """Метод возвращает объект формы для добавления предметов мебели"""
     if type!='':
         if type==u"Шкаф":        
             form=CupboardFormAdd(param,files,*args, **kwargs)
@@ -37,9 +41,11 @@ def choose_form(type,param=None,files=None,*args, **kwargs):
         elif type==u"Полка":
             form=ShelfFormAdd(param,files,*args, **kwargs)
         return form
-    return ''
+    else:
+        raise NotFurnityreType("Unknown type of furniture")
 
 def choose_model(type):
+    """Возвращение модели по ее типу"""
     if type!='':
         if type==u"Шкаф":        
             model=Cupboard.objects
@@ -52,10 +58,12 @@ def choose_model(type):
         elif type=='---------':
             model=PieceOfFurniture.objects
         return model
-    raise NotFurnityreType("Unknown type of furniture")
+    else:
+        raise NotFurnityreType("Unknown type of furniture")
 
 	
 def choose_handbook(type,param=None,*args, **kwargs):
+    """ Метод возвращает формы для добавления в справочники"""
     if type!='':            
         if type==u'Производитель':        
             form=ProduserFormAdd(param,*args, **kwargs)
@@ -64,9 +72,11 @@ def choose_handbook(type,param=None,*args, **kwargs):
         elif type==u'Материал':  
             form=MaterialFormAdd(param,*args, **kwargs)       
         return form
-    return ''
+    else:
+        raise NotHandbookType("Unknown type of handbook")
 	
 def help(request):
+    """Выдают справку в соответсвии с должностью"""
     user=request.user
     if user.is_authenticated():
         if this_is(user,u'BM'):
@@ -84,6 +94,7 @@ def help(request):
 	
 		
 def find(request,orders=""):
+    """Поиск товаров по критериям"""
     ord=orders #пришеший номер заказа
     basket=False  #Ссылка на корзину
     BM=False
@@ -156,6 +167,7 @@ def find(request,orders=""):
                               context_instance=RequestContext(request))
 	
 def buy_web(request, offset,ord):
+    """Просмотр товара"""
     try:
         offset = int(offset)#получили № товар 
     except ValueError:
@@ -168,6 +180,7 @@ def buy_web(request, offset,ord):
 
 
 def buy(request, offset,ord=""):
+    """Резервирование мебели"""
     ord=request.POST['Orders']
     if ord=="": #создаем новый заказ
         #empl=Emploeer.objects.get(id=1)
@@ -224,6 +237,7 @@ def basket(request, ord):
 
 							  
 def cancel_product(request, offset,ord):
+    """Отмена товара из заказа"""
     try:
         ord = int(ord)
         offset = int(offset)#получили № товар и № зааказа
@@ -243,6 +257,7 @@ def cancel_product(request, offset,ord):
 		
 
 def cancel_orders(request,ord):
+    """Отмена заказа"""
     try:
         ord = int(ord)
         #получили  № зааказа
@@ -258,6 +273,7 @@ def cancel_orders(request,ord):
 
 	
 def buyall(request,ord):
+    """оформление всего заказа"""
     try:
         ord = int(ord)
         act=request.POST['Action']
@@ -272,12 +288,14 @@ def buyall(request,ord):
                 Order.objects.filter(id=ord).update(emploeer=user.get_profile())
                 Order.objects.filter(id=ord).update(
                                  emploeer=user.get_profile().id)
-                Order.objects.filter(id=ord).update(
-                          cost=PieceOfFurniture.objects.filter(id__in=(
+                cost1=PieceOfFurniture.objects.filter(id__in=(
                               FurnitureInOrders.objects.filter(
                                   id_orders=ord).values_list(
                                      'id_furniture'))).aggregate(
-                                         Sum('price')))
+                                         Sum('price'))
+                #print(cost1)
+                Order.objects.filter(id=ord).update(
+                          cost=cost1["price__sum"])
                 order= Order.objects.get(id=ord)
                 try:
                     internet_order=InternetOrders.objects.get(id_orders=order)
@@ -290,6 +308,7 @@ def buyall(request,ord):
 
 
 def internetorder(request,ord):
+    """Интернет заказ"""
     try:
         ord = int(ord)
         #получили  № зааказа
@@ -325,6 +344,7 @@ def internetorder(request,ord):
                               context_instance=RequestContext(request))
 
 def buyinternetorder(request):
+    """ Регистрация персональных данных пользователя"""
     if request.POST:
         passport=request.POST["seria"]+" "+request.POST["number"]
         try:
@@ -352,7 +372,7 @@ def buyinternetorder(request):
 
 
 def store(request):
-    #/проверить что это кладовщик
+    """Рабочая зона кладовщика"""
     user=request.user
     if user.is_authenticated():
         if this_is(user,u'KL') or this_is(user,u'DR'):
@@ -374,6 +394,7 @@ def store(request):
 		
 		
 def store_see_furniture(request):
+    """Просмотр имеющихся товаров"""
     user=request.user
     if user.is_authenticated():
         manafactyrer=''
@@ -414,6 +435,7 @@ def store_see_furniture(request):
         return HttpResponseRedirect("/avtoriz/")
  
 def storeorder(request,order):
+    """Просмотр товаров в заказе"""
     user=request.user
     if user.is_authenticated():
         if this_is(user,u'KL') or this_is(user,u'DR'):
@@ -435,6 +457,7 @@ def storeorder(request,order):
 
 
 def storeordergive(request,order):
+    """Выдача заказа"""
     user=request.user
     if user.is_authenticated():
         if this_is(user,u'KL') or this_is(user,u'DR'):
@@ -522,6 +545,7 @@ def storeget(request):
         return HttpResponseRedirect("/avtoriz/")
 	
 def storeupdate(request, offset=''):
+    """Изменение товара"""
     if offset!='':
         try:
             id= int(offset)
@@ -567,14 +591,17 @@ def storeupdate(request, offset=''):
                               context_instance=RequestContext(request))
 
 def logout(request):
+    """Выход"""
     auth.logout(request)
     return HttpResponseRedirect("/avtoriz/")
 
 def avtorization(request):
+    """Страница авторизации"""
     return render_to_response('Avtorization.html', {'Error':''},
                               context_instance=RequestContext(request))	
 
 def enter(request):
+    """Индификация"""
     username = request.POST['login']
     password = request.POST['password']
     user = auth.authenticate(username=username, password=password)
@@ -593,6 +620,7 @@ def enter(request):
                               context_instance=RequestContext(request))
 
 def statistics(request):
+    """Статистика Заказов"""
     user=request.user
     if user.is_superuser:
          title = u"Статистика" #берем название из модели, что бы не хардкодить в двух местах   
@@ -605,6 +633,7 @@ def statistics(request):
          if request.POST:
              form=DataOrders(request.POST)
              if form.is_valid():
+                 print('ff')
                  date_with=form.cleaned_data['date_with']
                  date_by=form.cleaned_data['date_by']
          orders=Order.objects.filter(issuance=True)

@@ -1,0 +1,63 @@
+﻿{% extends "admin/base_site.html" %}
+{% load adminmedia admin_list i18n %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/changelists.css" />
+	{{form.media}}
+{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+{% endblock %}
+
+{% block bodyclass %}change-list{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="/admin/">
+    {% trans "Home" %}
+  </a>
+  &rsaquo; 
+  {{ title }}
+</div>
+{% endblock %}
+
+{% block coltype %}{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        <div class="results">
+        <form name="search" method="Post" action="">{% csrf_token %}
+        <table>
+		{{ form.as_table }} 	      <td><input type="image" src="/media/images/icon_searchbox.png" onClick="search.Submit()"/></td>
+		<table>
+        </form> 
+            
+                <h2>Сататистика заказов</h2>
+                <table cellspacing="0" style="width: 100%;" id="result_list">
+                    <thead>
+                        <tr>
+                            <th>Дата оформления заказа</th>
+							<th>Стулья</th>
+                            <th>Кресла</th>
+                            <th>Шкафы</th>
+							<th>Полки</th>
+                            <th>Общая стоймость заказа</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in registery %}                        
+                        <tr class="{% cycle 'row1' 'row2' %}">
+                            <td>{{ item.data }}</td>							
+							<td>{{ item.chair }}</td>
+							<td>{{ item.armchair }}</td>
+							<td>{{ item.cupboard }}</td>
+                            <td>{{ item.shelf }}</td>							
+                            <td>{{ item.cost }}</td>                            
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+             </div>
+{% endblock %}

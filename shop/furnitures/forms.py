@@ -292,9 +292,11 @@ class DataOrders(Form):
     date_with=DateField(label="C:",widget=DatePickerWidget(params="dateFormat: 'dd.mm.yy', changeYear: true,  yearRange: 'c-15:c+15'" ,attrs={'class': 'datepicker',}))
     date_by=DateField(label=" По:",widget=DatePickerWidget(params="dateFormat: 'dd.mm.yy', changeYear: true,  yearRange: 'c-15:c+15'" ,attrs={'class': 'datepicker',}))
     
-    def clean_date(self):
+    def clean_date_by(self):
         data = self.cleaned_data['date_with']
+        print(data)
         data2 = self.cleaned_data['date_by']
+        print(data2)
         if data>data2:
             raise forms.ValidationError(u"Первая дата должна быть меньше чем вторая дата")        
         # Always return the cleaned data, whether you have changed it or

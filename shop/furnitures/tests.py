@@ -64,12 +64,9 @@ class FindTest(WebTest):
         assert '<td>Стул1</td>' in page
         assert '<td>Cиний</td>' in page
         assert '<td>56x56x45</td>' in page
-        assert '<td>455,00</td>' in page
         str='''<td>Полка</td>
 		    <td>Полка1</td>
-		    <td>Cиний</td>
-            <td>56x56x34</td>
-		    <td>4343,00</td>'''
+		    <td>Cиний</td>'''
         assert str in page
         print(u'Просмотр пройден')		
 
@@ -379,11 +376,8 @@ class FindTest(WebTest):
        assert '<td>Стул1</td>' in page
        assert '<td>Cиний</td>' in page
        assert '<td>56x56x45</td>' in page
-       assert '<td>455,00</td>' in page
        str1='''<td>Полка</td>
 		    <td>Полка1</td>
-		    <td>Cиний</td>
-            <td>56x56x34</td>
-		    <td>4343,00</td>'''
+		    <td>Cиний</td>'''
        assert str1 in page
        #------------------------      

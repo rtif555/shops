@@ -1,0 +1,34 @@
+﻿{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block script %}
+     <link href="/media/style.css" rel="stylesheet" type="text/css" />
+     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+{% endblock %}
+{% block header_last %}
+            <li><a href="/logout/">Выход</a>
+			<li><a href="/storekeeper/"}>Назад</a>	
+{% endblock %}
+{% block tbody %}
+<h2>{{ what }}</h2>
+{% endblock %}
+{% block body %}
+<form name="{{ nameform }}" method="Post" action="get">{% csrf_token %}
+   	<input type="hidden" name="Type" value="{{ Type }}">
+	<input type="hidden" name="what" value="{{ what }}">
+	<table>
+      {{ form }}
+        <tr>
+		    <td>
+			    &nbsp 
+			</td>
+		</tr>
+		<tr>
+			<td>
+			    <input type="submit" class="submit-img"value="Добавить" name ="piece">				
+			</td>
+			
+		</tr>
+	</table>
+</form>
+{% endblock %}
+

@@ -1,0 +1,61 @@
+﻿{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block script %}
+      <script type="text/javascript" src="/media/js/jQuery.js"></script>
+	  <script type="text/javascript" src="/media/js/Print.js"></script>
+	  <script type="text/javascript">
+	  $(document).ready(function(){
+			$("#print").click(function(){
+	   $(".print").printElement({pageTitle:'Отчет',overrideElementCSS:[
+        "/media/style2.css",
+        { href:'/media/style2.css'}]
+            });
+	});			   
+	$(window).resize(function(){
+
+		$('.center').css({
+			position:'absolute',
+			left: ($(window).width() - $('.center').outerWidth())/2			
+		});
+		
+	});
+	// To initially run the function:
+	$(window).resize();
+
+});
+	  
+	  
+	  </script>
+
+     <link href="/media/style.css" rel="stylesheet" type="text/css" />
+     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+{% endblock %}
+{% block header_last %}
+            <li><a href="/logout/">Выход</a>
+			<li><a href="/storekeeper/"}>Назад</a>
+{% endblock %}
+{% block body %}
+<form enctype="multipart/form-data" name="{{ nameform }}" method="Post" action="">{% csrf_token %}
+    <input type="hidden" name="Type" value="{{ Type }}">
+    <input type="hidden" name="id" value="{{ Id }}">
+	<table class="centre">
+	 <tr>
+      <td rowspan="{% if form.type == 'Полка' %}8{% else %}9{% endif %}">	 <img src="{{ MEDIA_URL }}{{ image }}" height="300px" width="250px"> </td>
+      {{ form.as_table }}
+     </tr>
+        <tr>
+		    <td>
+			    &nbsp 
+			</td>
+		</tr>
+		<tr>
+
+			
+			<td align="center">
+			    <input type="submit" class="submit-img" value="Изменить" name ="piece">				
+			</td>
+		</tr>
+	</table>
+</form>
+{% endblock %}
+
